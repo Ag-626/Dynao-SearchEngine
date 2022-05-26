@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="./style1.css" />
+  </head>
+  <body>
+    <div class="topnav" id="myTopnav">
+      <a href="http://localhost:3000/" class="active">Home</a>
+      <a href="http://localhost:3000/about">About</a>
+      <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div>
+    <div class="google">
+      <center>
+        <h1 style="font-size: 60px">
+          <span style="color: blue">D</span><span style="color: red">y</span
+          ><span style="color: yellow">n</span><span style="color: blue">a</span
+          ><span style="color: green">o</span>
+        </h1>
+      </center>
+    </div>
+    <div class="form">
+      <form
+        id="form-search"
+        method="GET"
+        action="http://localhost:3000/search.ejs"
+      >
+        <input
+          type="text"
+          name="question"
+          id="question"
+          placeholder="Search Problems"
+          onfocus="this.placeholder=''"
+          onblur="this.placeholder='Search Problems'"
+        />
+        <input type="submit" value="Search" id="google_search" />
+      </form>
+    </div>
+
+    <div class="footer">
+      <a href="#top">Dynao: One stop place for Data Structures Problems</a>
+    </div>
+  </body>
+
+  <script>
+    const form = document.querySelector("form");
+    /* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
+    function myFunction() {
+      var x = document.getElementById("myTopnav");
+      if (x.className === "topnav") {
+        x.className += " responsive";
+      } else {
+        x.className = "topnav";
+      }
+    }
+    const questionElement = form.question;
+    form.addEventListener("submit", (e) => {
+      // e.preventDefault();
+      // const question = questionElement.value;
+      console.log(1);
+      // localStorage.setItem("question", questionElement.value);
+      // fetch(`/result.ejs`, { method: "GET" });
+    });
+  </script>
+</html>

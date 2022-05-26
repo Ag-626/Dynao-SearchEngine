@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Result</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="./style2.css" />
+  </head>
+  <body>
+    <!-- <h1>Search Engine</h1>
+    <form method="GET" action="http://localhost:3000/search.ejs">
+      <input type="text" name="question" id="question" />
+      <input type="submit" value="Ask Me:))" />
+    </form> -->
+        <div class="topnav" id="myTopnav">
+      <a href="http://localhost:3000/" class="active">Home</a>
+      <a href="http://localhost:3000/about">About</a>
+      <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div>
+    <div class="form">
+      <form
+        id="form-search"
+        method="GET"
+        action="http://localhost:3000/search.ejs"
+      >
+      <label for="First_Name" class="label">
+          <span style="color: blue; font-size: 30px;";>D</span><span style="color: red; font-size: 30px;">y</span
+          ><span style="color: yellow; font-size: 30px;">n</span><span style="color: blue; font-size: 30px;">a</span
+          ><span style="color: green; font-size: 30px;">o</span>
+      </label>
+        <input
+          type="text"
+          name="question"
+          id="question"
+          placeholder="Search Problems"
+          onfocus="this.placeholder=''"
+          onblur="this.placeholder='Search Problems'" value="<%= question %>"
+        />
+        <input type="submit" value="Search" id="google_search" />
+      </form>
+    </div>
+    <div class="display">
+    <div class="container my-3" id="maincontainer">
+      <!-- <h1 class="py-3">Search results</h1> -->
+      <h3>
+        <a href="<%= result[0].url %>" class="text-dark"
+        target="_blank"><%= result[0].title %></a
+        >
+      </h3>
+      <div class="result">
+        <p><%= result[0].statement %></p>
+      </div>
+      <h3>
+        <a href="<%= result[1].url %>" class="text-dark"
+        target="_blank"  ><%= result[1].title %></a
+        >
+      </h3>
+      <div class="result">
+        <p><%= result[1].statement %></p>
+      </div>
+      <h3>
+        <a href="<%= result[2].url %>" class="text-dark"
+         target="_blank" ><%= result[2].title %></a
+        >
+      </h3>
+      <div class="result">
+        <p><%= result[2].statement %></p>
+      </div>
+      <h3>
+        <a href="<%= result[3].url %>" class="text-dark"
+        target="_blank"  ><%= result[3].title %></a
+        >
+      </h3>
+      <div class="result">
+        <p><%= result[3].statement %></p>
+      </div>
+      <h3>
+        <a href="<%= result[4].url %>" class="text-dark"
+        target="_blank"  ><%= result[4].title %></a
+        >
+      </h3>
+      <div class="result">
+        <p><%= result[4].statement %></p>
+      </div>
+      <h3>
+        <a href="<%= result[5].url %>" class="text-dark"
+        target="_blank"  ><%= result[5].title %></a
+        >
+      </h3>
+      <div class="result">
+        <p><%= result[5].statement %></p>
+      </div>
+      <h3>
+        <a href="<%= result[6].url %>" class="text-dark"
+        target="_blank"  ><%= result[6].title %></a
+        >
+      </h3>
+      <div class="result">
+        <p><%= result[6].statement %></p>
+      </div>
+      <h3>
+        <a href="<%= result[7].url %>" class="text-dark"
+         target="_blank" ><%= result[7].title %></a
+        >
+      </h3>
+      <div class="result">
+        <p><%= result[7].statement %></p>
+      </div>
+      <h3>
+        <a href="<%= result[8].url %>" class="text-dark"
+         target="_blank" ><%= result[8].title %></a
+        >
+      </h3>
+      <div class="result">
+        <p><%= result[8].statement %></p>
+      </div>
+      <h3>
+        <a href="<%= result[9].url %>" class="text-dark"
+         target="_blank" ><%= result[9].title %></a
+        >
+      </h3>
+      <div class="result">
+        <p><%= result[9].statement %></p>
+      </div>
+    </div>
+    </div>
+    <div class="footer">
+      <a href="#top">Dynao: One stop place for Data Structures Problems</a>
+    </div>
+  </body>
+  </body>
+</html>
+
+<script>
+      const form = document.querySelector("form");
+    /* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
+    function myFunction() {
+      var x = document.getElementById("myTopnav");
+      if (x.className === "topnav") {
+        x.className += " responsive";
+      } else {
+        x.className = "topnav";
+      }
+    }
+</script>
