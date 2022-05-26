@@ -4,6 +4,8 @@ const path = require("path");
 
 const app = express();
 
+const PORT = process.env.PORT || 3000;
+
 app.set("view engine", "ejs");
 
 app.use(express.static(path.join(__dirname, "/public")));
@@ -189,238 +191,26 @@ fs.readFile("./tfidf_mat.txt", (err, data) => {
   // console.log(array[0][678]);
 });
 // console.log(array);
+setTimeout(function () {
+  app.get("/", (req, res, next) => {
+    res.render("index");
+  });
 
-app.get("/", (req, res, next) => {
-  res.render("index");
-});
+  app.get("/about", (req, res, next) => {
+    res.render("about");
+  });
 
-app.get("/about", (req, res, next) => {
-  res.render("about");
-});
+  app.get("/search", (req, res) => {
+    const query = req.query;
 
-app.get("/search", (req, res) => {
-  const query = req.query;
+    const question = query.question;
 
-  const question = query.question;
+    if (question == "") {
+      res.render("Fail");
+    }
 
-  if (question == "") {
-    res.render("Fail");
-  }
-  // var fs = require('fs');
+    let doc_freq = new Map();
 
-  // const fs = require("fs");
-  // const { exit, mainModule } = require("process");
-
-  // var strings = "";
-  // var keyword = "";
-  // var keywords = [];
-  // var df = [];
-  // var problem_urls = [];
-  // var problem_titles = [];
-  // var problem_statements = [];
-
-  // fs.readFile("./Problem_Statements.txt", (err, data) => {
-  //   if (err) {
-  //     console.log(err);
-  //   }
-  //   strings = data.toString();
-  //   for (var i = 0; i < strings.length; i++) {
-  //     if (strings[i] == "\n") {
-  //       keyword = keyword.replace(/[\r\n]+/gm, "");
-  //       problem_statements.push(keyword);
-  //       keyword = "";
-  //     } else {
-  //       keyword = keyword.concat(strings[i]);
-  //     }
-  //   }
-  //   keyword = keyword.replace(/[\r\n]+/gm, "");
-  //   problem_statements.push(keyword);
-  //   keyword = "";
-  // });
-
-  // // keyword = "";
-
-  // fs.readFile("./problem_titles.txt", (err, data) => {
-  //   if (err) {
-  //     console.log(err);
-  //   }
-  //   strings = data.toString();
-  //   for (var i = 0; i < strings.length; i++) {
-  //     if (strings[i] == "\n") {
-  //       keyword = keyword.replace(/[\r\n]+/gm, "");
-  //       problem_titles.push(keyword);
-  //       keyword = "";
-  //     } else {
-  //       keyword = keyword.concat(strings[i]);
-  //     }
-  //   }
-  //   keyword = keyword.replace(/[\r\n]+/gm, "");
-  //   problem_titles.push(keyword);
-  //   keyword = "";
-  // });
-
-  // // keyword = "";
-
-  // fs.readFile("./problem_urls.txt", (err, data) => {
-  //   if (err) {
-  //     console.log(err);
-  //   }
-  //   strings = data.toString();
-  //   for (var i = 0; i < strings.length; i++) {
-  //     if (strings[i] == "\n") {
-  //       keyword = keyword.replace(/[\r\n]+/gm, "");
-  //       problem_urls.push(keyword);
-  //       keyword = "";
-  //     } else {
-  //       keyword = keyword.concat(strings[i]);
-  //     }
-  //   }
-  //   keyword = keyword.replace(/[\r\n]+/gm, "");
-  //   problem_urls.push(keyword);
-  //   keyword = "";
-  // });
-
-  // // keyword = "";
-
-  // fs.readFile("./keywords.txt", (err, data) => {
-  //   if (err) {
-  //     console.log(err);
-  //   }
-  //   strings = data.toString();
-  //   for (var i = 0; i < strings.length; i++) {
-  //     if (strings[i] == "\n") {
-  //       keyword = keyword.replace(/[\r\n]+/gm, "");
-  //       keywords.push(keyword);
-  //       keyword = "";
-  //     } else {
-  //       keyword = keyword.concat(strings[i]);
-  //     }
-  //   }
-  //   keyword = keyword.replace(/[\r\n]+/gm, "");
-  //   keywords.push(keyword);
-  //   keyword = "";
-  // });
-
-  // // keyword = "";
-
-  // fs.readFile("./DF.txt", (err, data) => {
-  //   if (err) {
-  //     console.log(err);
-  //   }
-  //   strings = data.toString();
-  //   for (var i = 0; i < strings.length; i++) {
-  //     if (strings[i] == "\n") {
-  //       keyword = keyword.replace(/[\r\n]+/gm, "");
-  //       df.push(parseInt(keyword));
-  //       keyword = "";
-  //     } else {
-  //       keyword = keyword.concat(strings[i]);
-  //     }
-  //   }
-  //   keyword = keyword.replace(/[\r\n]+/gm, "");
-  //   df.push(parseInt(keyword));
-  //   keyword = "";
-  // });
-
-  // let string = "";
-  // let tfidf = [];
-  // let array = [];
-
-  // for (var i = 0; i < 1843; i++) {
-  //   for (var j = 0; j < 15076; j++) tfidf.push(0);
-  //   array.push(tfidf);
-  //   tfidf = [];
-  // }
-  // // console.log(array);
-  // let row = "";
-  // let val = "";
-
-  // fs.readFile("./tfidf_mat.txt", (err, data) => {
-  //   if (err) {
-  //     console.log(err);
-  //   }
-  //   string = data.toString();
-  //   for (var i = 0; i < string.length; i++) {
-  //     if (string[i] == "\n") {
-  //       row = row.replace(/[\r\n]+/gm, "");
-  //       for (var j = 0; j < row.length; j++) {
-  //         if (row[j] == " ") {
-  //           tfidf.push(parseInt(val));
-  //           val = "";
-  //         } else {
-  //           val = val.concat(row[j]);
-  //         }
-  //       }
-  //       tfidf.push(parseFloat(val));
-  //       array[tfidf[0]][tfidf[1]] = tfidf[2];
-  //       tfidf = [];
-  //       row = "";
-  //       val = "";
-  //     } else {
-  //       row = row.concat(string[i]);
-  //     }
-  //   }
-  //   row = row.replace(/[\r\n]+/gm, "");
-  //   // console.log(row);
-  //   // console.log(row[0]);
-  //   // console.log(row[row.length - 1]);
-  //   for (var j = 0; j < row.length; j++) {
-  //     if (row[j] == " ") {
-  //       // console.log(val);
-  //       tfidf.push(parseInt(val));
-  //       val = "";
-  //     } else {
-  //       val = val.concat(row[j]);
-  //     }
-  //   }
-  //   tfidf.push(parseFloat(val));
-  //   // console.log(tfidf[0]);
-  //   // console.log(tfidf[1]);
-  //   // console.log(tfidf[2]);
-  //   array[tfidf[0]][tfidf[1]] = tfidf[2];
-  //   tfidf = [];
-  //   row = "";
-  //   // console.log(array[0][25]);
-  //   // console.log(array[1][106]);
-  //   // console.log(array[1][6]);
-  //   // console.log(array[2][52]);
-  //   // console.log(array[0][678]);
-  // });
-  // // console.log(array);
-  // // function csvToArray(csv) {
-  // //   rows = csv.split("\n");
-  // //   console.log(rows)
-  // //   // for (var j = 0; j < rows.length; j++) {
-  // //   //   row = rows[j];
-  // //   //   for (var i = 0; i < row.length; i++) {
-  // //   //     if (row[i] == " ") {
-  // //   //       tfidf.push(parseFloat(string));
-  // //   //       string = "";
-  // //   //     } else {
-  // //   //       string = string.concat(row[i]);
-  // //   //     }
-  // //   //   }
-  // //   //   tfidf.push(parseFloat(string));
-  // //   //   console.log(tfidf[0]);
-  // //   //   console.log(tfidf[1]);
-  // //   //   console.log(tfidf[2]);
-  // //   //   tfidf = [];
-  // //   // }
-  // //   // return tf_idf;
-  // // }
-  // // var array;
-  // // fs.readFile("./tfidf_mat.txt", (err, data) => {
-  // //   if (err) {
-  // //     console.log(err);
-  // //   }
-  // //   var csv = data.toString();
-
-  // //   array = csvToArray(csv);
-  // //   // console.log(array);
-  // // });
-
-  let doc_freq = new Map();
-  setTimeout(function () {
     for (var i = 0; i < 15076; i++) {
       doc_freq.set(keywords[i], df[i]);
     }
@@ -519,8 +309,8 @@ app.get("/search", (req, res) => {
     }
     // console.log(result);
     res.render("search", { result: result, question: question });
-  }, 2000);
-});
+  });
+}, 3000);
 
 app.listen(PORT, () => {
   console.log("Server is running on port " + PORT);
