@@ -13,10 +13,8 @@
   </head>
   <body>
     <div class="topnav" id="myTopnav">
-      <a href="https://dynao-search-engine.herokuapp.com/" class="active"
-        >Home</a
-      >
-      <a href="https://dynao-search-engine.herokuapp.com/about">About</a>
+      <a href="/" class="active">Home</a>
+      <a href="/about">About</a>
       <a href="javascript:void(0);" class="icon" onclick="myFunction()">
         <i class="fa fa-bars"></i>
       </a>
@@ -31,11 +29,7 @@
       </center>
     </div>
     <div class="form">
-      <form
-        id="form-search"
-        method="GET"
-        action="https://dynao-search-engine.herokuapp.com/search.ejs"
-      >
+      <form id="form-search" method="GET" action="/search">
         <input
           type="text"
           name="question"
