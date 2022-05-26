@@ -18,7 +18,7 @@ app.get("/about", (req, res, next) => {
   res.render("about");
 });
 
-app.get("/search.ejs", (req, res) => {
+app.get("/search", (req, res) => {
   const query = req.query;
 
   const question = query.question;
@@ -338,7 +338,7 @@ app.get("/search.ejs", (req, res) => {
       }
       // console.log(result);
       res.render("search", { result: result, question: question });
-    }, 2000);
+    }, 3000);
   }
 });
 
