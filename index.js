@@ -23,7 +23,7 @@ app.get("/search", (req, res) => {
 
   const question = query.question;
 
-  if (question == "") res.render("fail");
+  if (question == "") res.render("Fail");
   else {
     // var fs = require('fs');
 
@@ -338,7 +338,7 @@ app.get("/search", (req, res) => {
       }
       // console.log(result);
       res.render("search", { result: result, question: question });
-    }, 3000);
+    }, 5000);
   }
 });
 
