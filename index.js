@@ -4,12 +4,11 @@ const path = require("path");
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
-
 app.set("view engine", "ejs");
 
 app.use(express.static(path.join(__dirname, "/public")));
 
+const PORT = process.env.PORT || 3000;
 const fs = require("fs");
 const { exit, mainModule } = require("process");
 
