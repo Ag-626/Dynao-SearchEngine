@@ -18,26 +18,26 @@ var keywords = [];
 var df = [];
 var problem_urls = [];
 var problem_titles = [];
-var problem_statements = [];
+// var problem_statements = [];
 
-fs.readFile("./Problem_Statements.txt", (err, data) => {
-  if (err) {
-    console.log(err);
-  }
-  strings = data.toString();
-  for (var i = 0; i < strings.length; i++) {
-    if (strings[i] == "\n") {
-      keyword = keyword.replace(/[\r\n]+/gm, "");
-      problem_statements.push(keyword);
-      keyword = "";
-    } else {
-      keyword = keyword.concat(strings[i]);
-    }
-  }
-  keyword = keyword.replace(/[\r\n]+/gm, "");
-  problem_statements.push(keyword);
-  keyword = "";
-});
+// fs.readFile("./Problem_Statements.txt", (err, data) => {
+//   if (err) {
+//     console.log(err);
+//   }
+//   strings = data.toString();
+//   for (var i = 0; i < strings.length; i++) {
+//     if (strings[i] == "\n") {
+//       keyword = keyword.replace(/[\r\n]+/gm, "");
+//       problem_statements.push(keyword);
+//       keyword = "";
+//     } else {
+//       keyword = keyword.concat(strings[i]);
+//     }
+//   }
+//   keyword = keyword.replace(/[\r\n]+/gm, "");
+//   problem_statements.push(keyword);
+//   keyword = "";
+// });
 
 // keyword = "";
 
@@ -188,126 +188,137 @@ fs.readFile("./tfidf_mat.txt", (err, data) => {
   // console.log(array[0][678]);
 });
 // console.log(array);
-setTimeout(function () {
-  app.get("/", (req, res, next) => {
-    res.render("index");
-  });
+app.get("/", (req, res, next) => {
+  res.render("index");
+});
 
-  app.get("/about", (req, res, next) => {
-    res.render("about");
-  });
+app.get("/about", (req, res, next) => {
+  res.render("about");
+});
 
-  app.get("/search", (req, res) => {
-    const query = req.query;
+app.get("/search", (req, res) => {
+  const query = req.query;
 
-    const question = query.question;
+  const question = query.question;
 
-    if (question == "") {
-      res.render("Fail");
+  if (question == "") {
+    res.render("Fail");
+  }
+
+  let doc_freq = new Map();
+
+  for (var i = 0; i < 15076; i++) {
+    doc_freq.set(keywords[i], df[i]);
+  }
+  // console.log(doc_freq);
+
+  function calculateMagnitude(vector) {
+    let magnitude = 0;
+    for (let i = 0; i < vector.length; i++) {
+      if (isNaN(vector[i]) && vector[i] > 0) {
+        magnitude += 0;
+      } else {
+        magnitude += vector[i] * vector[i];
+      }
     }
+    return Math.sqrt(magnitude);
+  }
 
-    let doc_freq = new Map();
-
-    for (var i = 0; i < 15076; i++) {
-      doc_freq.set(keywords[i], df[i]);
+  function calculateTermFrequency(term, doc) {
+    let numOccurences = 0;
+    for (let i = 0; i < doc.length; i++) {
+      if (doc[i].toLowerCase() == term.toLowerCase()) {
+        numOccurences++;
+      }
     }
-    // console.log(doc_freq);
+    return (numOccurences * 1.0) / doc.length;
+  }
 
-    function calculateMagnitude(vector) {
-      let magnitude = 0;
-      for (let i = 0; i < vector.length; i++) {
-        if (isNaN(vector[i]) && vector[i] > 0) {
-          magnitude += 0;
-        } else {
-          magnitude += vector[i] * vector[i];
+  function createVectorSpaceModel(query) {
+    query = Array.isArray(query) ? query : query.split(" ");
+    let termFrequencyModel = new Map();
+    let tidf_query = new Map();
+    for (let i = 0; i < query.length; i++) {
+      // termFrequencyModel.set(query[i], calculateTermFrequency(query[i], query));
+      for (let j = 0; j < keywords.length; j++) {
+        if (query[i].toLowerCase() == keywords[j].toLowerCase()) {
+          var tidf_value =
+            calculateTermFrequency(query[i], query) *
+            Math.log((1843 + 1) / (df[j] + 1));
+          tidf_query.set(query[i], tidf_value);
         }
       }
-      return Math.sqrt(magnitude);
     }
+    return tidf_query;
+  }
 
-    function calculateTermFrequency(term, doc) {
-      let numOccurences = 0;
-      for (let i = 0; i < doc.length; i++) {
-        if (doc[i].toLowerCase() == term.toLowerCase()) {
-          numOccurences++;
-        }
-      }
-      return (numOccurences * 1.0) / doc.length;
-    }
+  // var s=;
+  const { StemmerEn, StopwordsEn } = require("@nlpjs/lang-en");
 
-    function createVectorSpaceModel(query) {
-      query = Array.isArray(query) ? query : query.split(" ");
-      let termFrequencyModel = new Map();
-      let tidf_query = new Map();
-      for (let i = 0; i < query.length; i++) {
-        // termFrequencyModel.set(query[i], calculateTermFrequency(query[i], query));
-        for (let j = 0; j < keywords.length; j++) {
-          if (query[i].toLowerCase() == keywords[j].toLowerCase()) {
-            var tidf_value =
-              calculateTermFrequency(query[i], query) *
-              Math.log((1843 + 1) / (df[j] + 1));
-            tidf_query.set(query[i], tidf_value);
+  const stemmer = new StemmerEn();
+  stemmer.stopwords = new StopwordsEn();
+  const input = question;
+  // console.log(stemmer.tokenizeAndStem(input, false));
+  // output: ['develop']
+  var q = stemmer.tokenizeAndStem(input, false);
+
+  let tf_idf_query = createVectorSpaceModel(
+    stemmer.tokenizeAndStem(input, false)
+  );
+  // console.log(tf_idf_query);
+  let ranking = [];
+  for (let i = 0; i < array.length; i++) {
+    var si = 0;
+    for (let k = 0; k < q.length; k++) {
+      for (let j = 0; j < keywords.length; j++) {
+        if (q[k].toLowerCase() == keywords[j].toLowerCase()) {
+          var toAdd = tf_idf_query.get(q[k]) * array[i][j];
+          if (isNaN(toAdd)) {
+            si += 0;
+          } else {
+            si += toAdd;
           }
         }
       }
-      return tidf_query;
     }
-
-    // var s=;
-    const { StemmerEn, StopwordsEn } = require("@nlpjs/lang-en");
-
-    const stemmer = new StemmerEn();
-    stemmer.stopwords = new StopwordsEn();
-    const input = question;
-    // console.log(stemmer.tokenizeAndStem(input, false));
-    // output: ['develop']
-    var q = stemmer.tokenizeAndStem(input, false);
-
-    let tf_idf_query = createVectorSpaceModel(
-      stemmer.tokenizeAndStem(input, false)
-    );
-    // console.log(tf_idf_query);
-    let ranking = [];
-    for (let i = 0; i < array.length; i++) {
-      var si = 0;
-      for (let k = 0; k < q.length; k++) {
-        for (let j = 0; j < keywords.length; j++) {
-          if (q[k].toLowerCase() == keywords[j].toLowerCase()) {
-            var toAdd = tf_idf_query.get(q[k]) * array[i][j];
-            if (isNaN(toAdd)) {
-              si += 0;
-            } else {
-              si += toAdd;
-            }
-          }
-        }
-      }
-      // let query_mag = calculateMagnitude(q);
-      let doc_mag = calculateMagnitude(array[i]);
-      let similarity = (1.0 * si) / (q.length * doc_mag);
-      ranking.push({
-        similarityIndex: similarity,
-        index: i,
-      });
-    }
-
-    // }
-    ranking.sort((a, b) => {
-      return b.similarityIndex - a.similarityIndex;
+    // let query_mag = calculateMagnitude(q);
+    let doc_mag = calculateMagnitude(array[i]);
+    let similarity = (1.0 * si) / (q.length * doc_mag);
+    ranking.push({
+      similarityIndex: similarity,
+      index: i,
     });
+  }
 
-    let result = [];
-    for (let i = 0; i < 10; i++) {
-      result.push({
-        title: problem_titles[ranking[i].index],
-        url: problem_urls[ranking[i].index],
-        statement: problem_statements[ranking[i].index],
-      });
-    }
-    // console.log(result);
-    res.render("search", { result: result, question: question });
+  // }
+  ranking.sort((a, b) => {
+    return b.similarityIndex - a.similarityIndex;
   });
-}, 3000);
+
+  let result = [];
+  for (let i = 0; i < 10; i++) {
+    if (ranking[i].index + 1 <= 983) {
+      keyword = fs
+        .readFileSync(
+          "problem1/problem" + String(ranking[i].index + 1) + ".txt"
+        )
+        .toString();
+    } else {
+      keyword = fs
+        .readFileSync(
+          "problem2/problem" + String(ranking[i].index + 1) + ".txt"
+        )
+        .toString();
+    }
+    result.push({
+      title: problem_titles[ranking[i].index],
+      url: problem_urls[ranking[i].index],
+      statement: keyword,
+    });
+  }
+  // console.log(result);
+  res.render("search", { result: result, question: question });
+});
 
 app.listen(PORT, () => {
   console.log("Server is running on port " + PORT);
