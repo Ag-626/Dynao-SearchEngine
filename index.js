@@ -18,28 +18,6 @@ var keywords = [];
 var df = [];
 var problem_urls = [];
 var problem_titles = [];
-// var problem_statements = [];
-
-// fs.readFile("./Problem_Statements.txt", (err, data) => {
-//   if (err) {
-//     console.log(err);
-//   }
-//   strings = data.toString();
-//   for (var i = 0; i < strings.length; i++) {
-//     if (strings[i] == "\n") {
-//       keyword = keyword.replace(/[\r\n]+/gm, "");
-//       problem_statements.push(keyword);
-//       keyword = "";
-//     } else {
-//       keyword = keyword.concat(strings[i]);
-//     }
-//   }
-//   keyword = keyword.replace(/[\r\n]+/gm, "");
-//   problem_statements.push(keyword);
-//   keyword = "";
-// });
-
-// keyword = "";
 
 fs.readFile("./problem_titles.txt", (err, data) => {
   if (err) {
@@ -199,11 +177,91 @@ app.get("/about", (req, res, next) => {
 app.get("/search", (req, res) => {
   const query = req.query;
 
-  const question = query.question;
+  const questions = query.question;
 
-  if (question == "") {
+  if (questions == "") {
     res.render("Fail");
   }
+
+  var a = [
+    "",
+    "one ",
+    "two ",
+    "three ",
+    "four ",
+    "five ",
+    "six ",
+    "seven ",
+    "eight ",
+    "nine ",
+    "ten ",
+    "eleven ",
+    "twelve ",
+    "thirteen ",
+    "fourteen ",
+    "fifteen ",
+    "sixteen ",
+    "seventeen ",
+    "eighteen ",
+    "nineteen ",
+  ];
+  var b = [
+    "",
+    "",
+    "twenty",
+    "thirty",
+    "forty",
+    "fifty",
+    "sixty",
+    "seventy",
+    "eighty",
+    "ninety",
+  ];
+
+  function inWords(num) {
+    if ((num = num.toString()).length > 9) return "overflow";
+    n = ("000000000" + num)
+      .substr(-9)
+      .match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+    if (!n) return;
+    var str = "";
+    str +=
+      n[1] != 0
+        ? (a[Number(n[1])] || b[n[1][0]] + " " + a[n[1][1]]) + "crore "
+        : "";
+    str +=
+      n[2] != 0
+        ? (a[Number(n[2])] || b[n[2][0]] + " " + a[n[2][1]]) + "lakh "
+        : "";
+    str +=
+      n[3] != 0
+        ? (a[Number(n[3])] || b[n[3][0]] + " " + a[n[3][1]]) + "thousand "
+        : "";
+    str +=
+      n[4] != 0
+        ? (a[Number(n[4])] || b[n[4][0]] + " " + a[n[4][1]]) + "hundred "
+        : "";
+    str +=
+      n[5] != 0
+        ? (str != "" ? "and " : "") +
+          (a[Number(n[5])] || b[n[5][0]] + " " + a[n[5][1]])
+        : "";
+    return str;
+  }
+
+  let ans = "";
+  let split = questions.split(" ");
+  let word;
+  for (var i = 0; i < split.length; i++) {
+    if (isNaN(split[i])) {
+      ans = ans.concat(split[i]);
+      ans = ans.concat(" ");
+    } else {
+      word = inWords(parseInt(split[i]));
+      ans = ans.concat(word);
+    }
+  }
+  let question = ans;
 
   let doc_freq = new Map();
 
@@ -317,7 +375,7 @@ app.get("/search", (req, res) => {
     });
   }
   // console.log(result);
-  res.render("search", { result: result, question: question });
+  res.render("search", { result: result, question: questions });
 });
 
 app.listen(PORT, () => {
